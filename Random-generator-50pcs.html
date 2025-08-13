@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verse of the Day</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4, #ffdde1, #b5fffc, #c7ffd8, #ffe29f);
+    background-size: 600% 600%;
+    animation: gradientBG 10s ease infinite;
+    text-align: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+  @keyframes gradientBG {
+    0% {background-position:0% 50%}
+    50% {background-position:100% 50%}
+    100% {background-position:0% 50%}
+  }
+  h1 {
+    font-size: 28px;
+    color: #222;
+  }
+  button {
+    background: #ff5722;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    margin: 15px 0;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:disabled {
+    background: #999;
+    cursor: not-allowed;
+  }
+  button:hover:enabled {
+    background: #e64a19;
+  }
+  #verseBox {
+    background: rgba(255,255,255,0.9);
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 18px;
+    min-height: 100px;
+  }
+  .confetti {
+    position: fixed;
+    top: -10px;
+    font-size: 24px;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+  @keyframes fall {
+    0% {transform: translateY(-10px) rotate(0deg);}
+    100% {transform: translateY(100vh) rotate(360deg);}
+  }
+</style>
+</head>
+<body>
+
+<h1>🎉🎊 Verse of the Day 🎊🎉</h1>
+<button id="getVerseBtn" onclick="showVerse()">Get Verse</button>
+<div id="verseBox">Click the button to get your verse of the day.</div>
+
+<script>
+let verses = [
+  "Philippians 4:13 – I can do all things through Christ who strengthens me.",
+  "Psalm 23:1 – The Lord is my shepherd; I shall not want.",
+  "John 3:16 – For God so loved the world that He gave His one and only Son, that whoever believes in Him shall not perish but have eternal life.",
+  "Romans 8:28 – And we know that in all things God works for the good of those who love Him.",
+  "Proverbs 3:5 – Trust in the Lord with all your heart and lean not on your own understanding.",
+  "Matthew 5:14 – You are the light of the world. A city on a hill cannot be hidden.",
+  "Isaiah 41:10 – Do not fear, for I am with you; do not be dismayed, for I am your God.",
+  "Psalm 46:1 – God is our refuge and strength, an ever-present help in trouble.",
+  "Matthew 11:28 – Come to me, all you who are weary and burdened, and I will give you rest.",
+  "1 Corinthians 13:4 – Love is patient, love is kind. It does not envy, it does not boast, it is not proud.",
+  "Jeremiah 29:11 – For I know the plans I have for you, declares the Lord.",
+  "Hebrews 13:8 – Jesus Christ is the same yesterday and today and forever.",
+  "Psalm 118:24 – This is the day that the Lord has made; let us rejoice and be glad in it.",
+  "1 Peter 5:7 – Cast all your anxiety on Him because He cares for you.",
+  "Romans 12:2 – Do not conform to the pattern of this world, but be transformed by the renewing of your mind.",
+  "Galatians 6:9 – Let us not become weary in doing good, for at the proper time we will reap a harvest.",
+  "Psalm 34:8 – Taste and see that the Lord is good; blessed is the one who takes refuge in Him.",
+  "Ephesians 6:11 – Put on the full armor of God, so that you can take your stand against the devil’s schemes.",
+  "Matthew 6:33 – But seek first His kingdom and His righteousness, and all these things will be given to you.",
+  "James 1:17 – Every good and perfect gift is from above.",
+  "Psalm 19:14 – May these words of my mouth and this meditation of my heart be pleasing in Your sight, Lord.",
+  "2 Timothy 1:7 – For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.",
+  "Colossians 3:23 – Whatever you do, work at it with all your heart, as working for the Lord.",
+  "Matthew 7:7 – Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.",
+  "John 14:6 – I am the way and the truth and the life. No one comes to the Father except through me.",
+  "Psalm 27:1 – The Lord is my light and my salvation—whom shall I fear?",
+  "Isaiah 40:31 – Those who hope in the Lord will renew their strength. They will soar on wings like eagles.",
+  "Romans 10:9 – If you declare with your mouth, ‘Jesus is Lord,’ and believe in your heart that God raised Him from the dead, you will be saved.",
+  "1 Thessalonians 5:16 – Rejoice always, pray continually, give thanks in all circumstances.",
+  "Psalm 37:4 – Take delight in the Lord, and He will give you the desires of your heart.",
+  "Micah 6:8 – Act justly, love mercy, and walk humbly with your God.",
+  "John 8:12 – I am the light of the world. Whoever follows me will never walk in darkness.",
+  "Joshua 1:9 – Be strong and courageous. Do not be afraid; do not be discouraged.",
+  "Mark 11:24 – Whatever you ask for in prayer, believe that you have received it, and it will be yours.",
+  "Psalm 55:22 – Cast your cares on the Lord and He will sustain you.",
+  "Ephesians 2:8 – For it is by grace you have been saved, through faith.",
+  "Luke 6:31 – Do to others as you would have them do to you.",
+  "1 John 4:19 – We love because He first loved us.",
+  "Psalm 91:2 – He is my refuge and my fortress, my God, in whom I trust.",
+  "Proverbs 18:10 – The name of the Lord is a fortified tower; the righteous run to it and are safe.",
+  "Matthew 19:26 – With God all things are possible.",
+  "2 Corinthians 5:7 – For we live by faith, not by sight.",
+  "Romans 5:8 – But God demonstrates His own love for us in this: While we were still sinners, Christ died for us.",
+  "Psalm 121:1-2 – I lift up my eyes to the mountains—where does my help come from?",
+  "Hebrews 11:1 – Now faith is confidence in what we hope for and assurance about what we do not see.",
+  "Matthew 22:37 – Love the Lord your God with all your heart and with all your soul and with all your mind.",
+  "1 Corinthians 10:13 – God is faithful; He will not let you be tempted beyond what you can bear.",
+  "James 1:5 – If any of you lacks wisdom, you should ask God, who gives generously.",
+  "Psalm 139:14 – I praise You because I am fearfully and wonderfully made.",
+  "Isaiah 26:3 – You will keep in perfect peace those whose minds are steadfast, because they trust in You."
+];
+
+let availableVerses = [...verses]; // Copy for no-repeat system
+
+function showVerse() {
+  const btn = document.getElementById("getVerseBtn");
+  btn.disabled = true;
+  setTimeout(() => btn.disabled = false, 2000);
+
+  if (availableVerses.length === 0) {
+    availableVerses = [...verses]; // Reset after all shown
+  }
+
+  const randomIndex = Math.floor(Math.random() * availableVerses.length);
+  const selectedVerse = availableVerses.splice(randomIndex, 1)[0];
+  document.getElementById("verseBox").innerText = selectedVerse;
+
+  for (let i = 0; i < 20; i++) {
+    let conf = document.createElement("div");
+    conf.className = "confetti";
+    conf.innerText = ["🎉","🎊"][Math.floor(Math.random()*2)];
+    conf.style.left = Math.random() * 100 + "vw";
+    conf.style.animationDuration = (Math.random() * 2 + 3) + "s";
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 5000);
+  }
+}
+</script>
+
+</body>
+  </html>
